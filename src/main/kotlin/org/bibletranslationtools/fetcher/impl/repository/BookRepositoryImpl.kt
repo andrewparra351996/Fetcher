@@ -17,7 +17,7 @@ class BookRepositoryImpl(
         val availableBookCodes = storageAccess.getBookSlugs(languageCode, resourceId)
 
         books.forEach {
-            it.availability = it.slug in availableBookCodes
+            it.availability = storageAccess.isBookAvailable(it, languageCode, resourceId, productSlug)
             // set localized name here
         }
 
