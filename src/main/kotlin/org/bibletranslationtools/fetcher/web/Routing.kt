@@ -228,7 +228,8 @@ private fun chaptersView(
     val bookViewData: BookViewData? = FetchBookViewData(
         resolver.bookRepository,
         resolver.storageAccess,
-        params.languageCode
+        params.languageCode,
+        params.productSlug
     ).getViewData(params.bookSlug, params.productSlug)
     val chapterViewDataList: List<ChapterViewData>? = try {
         FetchChapterViewData(
