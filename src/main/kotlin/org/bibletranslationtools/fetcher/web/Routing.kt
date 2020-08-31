@@ -183,7 +183,11 @@ private fun booksView(
         resolver.bookRepository,
         resolver.storageAccess,
         params.languageCode
-    ).getViewDataList(path)
+    ).getViewDataList(
+        path,
+        params.productSlug,
+        resolver.chapterCatalog
+    )
 
     return ThymeleafContent(
         template = "books",
