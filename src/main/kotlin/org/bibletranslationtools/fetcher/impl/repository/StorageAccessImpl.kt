@@ -1,15 +1,25 @@
 package org.bibletranslationtools.fetcher.impl.repository
 
+import org.bibletranslationtools.fetcher.data.Book
 import java.io.File
 import org.bibletranslationtools.fetcher.data.CompressedExtensions
 import org.bibletranslationtools.fetcher.data.ContainerExtensions
 import org.bibletranslationtools.fetcher.repository.DirectoryProvider
 import org.bibletranslationtools.fetcher.repository.FileAccessRequest
 import org.bibletranslationtools.fetcher.repository.StorageAccess
+import org.bibletranslationtools.fetcher.usecase.ProductFileExtension
 import org.slf4j.LoggerFactory
 
 class StorageAccessImpl(private val directoryProvider: DirectoryProvider) : StorageAccess {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private data class PriorityItem(val fileExtension: String, val mediaQuality: String)
+
+    private val priorityList = listOf(
+        PriorityItem("mp3", "hi"),
+        PriorityItem("mp3", "low"),
+        PriorityItem("wav", "")
+    )
 
     override fun getContentRoot(): File {
         return directoryProvider.getContentRoot()
@@ -56,6 +66,24 @@ class StorageAccessImpl(private val directoryProvider: DirectoryProvider) : Stor
             logger.error("Max files allowed: 1. Too many files found at $bookContentDir", e)
             null
         }
+    }
+
+    override fun isBookAvailable(
+        book: Book,
+        languageCode: String,
+        resourceId: String,
+        productSlug: String
+    ): Boolean {
+        val product = ProductFileExtension.getType(productSlug) ?: return false
+
+        val bookPrefixDir = getPathPrefixDir(
+            languageCode = languageCode,
+            resourceId = resourceId,
+            bookSlug = book.slug,
+            fileExtension = product.fileType
+        )
+
+        return book.availability
     }
 
     override fun getChapterFile(request: FileAccessRequest): File? {

@@ -11,9 +11,14 @@ import org.bibletranslationtools.fetcher.usecase.viewdata.ChapterViewData
 class FetchBookViewData(
     private val bookRepo: BookRepository,
     private val storage: StorageAccess,
-    private val languageCode: String
+    private val languageCode: String,
+    private val productSlug: String
 ) {
-    private val books = bookRepo.getBooks(languageCode = languageCode, resourceId = "ulb")
+    private val books = bookRepo.getBooks(
+        languageCode = languageCode,
+        resourceId = "ulb",
+        productSlug = productSlug
+    )
 
     private data class PriorityItem(val fileExtension: String, val mediaQuality: String)
 
