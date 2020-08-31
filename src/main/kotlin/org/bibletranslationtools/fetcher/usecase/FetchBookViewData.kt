@@ -33,7 +33,7 @@ class FetchBookViewData(
 
     fun getViewData(bookSlug: String, productSlug: String): BookViewData? {
         val product = ProductFileExtension.getType(productSlug) ?: return null
-        val book = bookRepo.getBook(bookSlug, languageCode)
+        val book = bookRepo.getBook(bookSlug, languageCode) ?: return null
         var url: String? = null
 
         for (priority in priorityList) {
@@ -49,15 +49,13 @@ class FetchBookViewData(
             }
         }
 
-        return if (book != null) BookViewData(
+        return BookViewData(
             index = book.index,
             slug = book.slug,
             anglicizedName = book.anglicizedName,
             localizedName = book.localizedName,
             url = url
-        ) else {
-            null
-        }
+        )
     }
 
     private fun getBTTRFileAccessRequest(
